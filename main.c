@@ -2,14 +2,26 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 struct User {
+    char username[50];
+    // Add additional fields as needed
     char lastname[50];
     char firstname[50];
     char password[100];
     char id[50];
     char type[50];
 };
+
+void initializeUser(struct User* user) {
+    memset(user, 0, sizeof(struct User));
+}
+
+void login(struct User* user) {
+    printf("Enter your username: ");
+    fgets(user->username, sizeof(user->username), stdin);
+    user->username[strcspn(user->username, "\n")] = '\0'; // Remove newline character
+}
+
 
 void managementMode() {
     // Code for management mode
@@ -20,7 +32,47 @@ void managementMode() {
 void clientMode() {
     // Code for client mode
     printf("You are in client mode.\n");
-    // Add your client mode functionality here
+    printf("Welcome back, %s!\n",);
+    printf("Welcome to the Car shop, %s!\n",);
+    printf("=========================================\n");
+    printf("              Car Shop              \n");
+    printf("=========================================\n");
+    printf("Available options:\n");
+    printf("1. Browse Products\n");
+    printf("2. Add to Cart\n");
+    printf("3. View Cart\n");
+    printf("4. Checkout\n");
+    printf("5. Logout\n");
+
+    int choice;
+    printf("Enter your choice: ");
+    scanf("%d", &choice);
+
+    switch (choice) {
+        case 1:
+            printf("Browsing products...\n");
+            // Add code for browsing products
+            break;
+        case 2:
+            printf("Adding to cart...\n");
+            // Add code for adding to cart
+            break;
+        case 3:
+            printf("Viewing cart...\n");
+            // Add code for viewing cart
+            break;
+        case 4:
+            printf("Checking out...\n");
+            // Add code for checkout
+            break;
+        case 5:
+            printf("Logging out...\n");
+            // Add code for logging out
+            break;
+        default:
+            printf("Invalid choice.\n");
+            break;
+    }
 }
 
 void saveUserData(struct User user) {
@@ -57,12 +109,12 @@ int main() {
     printf("Please enter your password: ");
     fgets(user.password, sizeof(user.password), stdin);
     user.password[strcspn(user.password, "\n")] = '\0'; // Remove newline character
-
-    printf("Welcome, %s!\n", user.firstname);
-
+  
     printf("Please choose a mode (management/client): ");
     fgets(mode, sizeof(mode), stdin);
     mode[strcspn(mode, "\n")] = '\0'; // Remove newline character
+
+    printf("Welcome, %s!\n", user.firstname);
 
     if (strcmp(mode, "management") == 0) {
         managementMode();
@@ -72,9 +124,9 @@ int main() {
         printf("Invalid mode selected. Exiting...\n");
         return 1;
     }
-
-    saveUserData(user); // Save user data to file
+      saveUserData(user); // Save user data to file
 
     return 0;
 }
+
 
