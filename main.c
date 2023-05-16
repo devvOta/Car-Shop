@@ -1,116 +1,144 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
-void editFile(char *filename, char *newContent) {
-    FILE *fp;
-    char buffer[1000];
-    int len;
+#define MAX_BUTTONS 5
 
-    fp = fopen(filename, "w"); // open file for writing
-
-    if (fp == NULL) {
-        printf("Failed to open file %s\n", filename);
-        return;
-    }
-
-    // write new content to file
-    fprintf(fp, "%s", newContent);
-
-    fclose(fp); // close file
-    printf("File %s successfully edited!\n", filename);
-}
-void appendToFile(char *filename, char *newContent) {
-    FILE *fp;
-
-    fp = fopen(filename, "a"); // open file for appending
-
-    if (fp == NULL) {
-        printf("Failed to open file %s\n", filename);
-        return;
-    }
-
-    // write new content to file
-    fprintf(fp, "%s", newContent);
-
-    fclose(fp); // close file
-    printf("New content successfully appended to file %s!\n", filename);
-}
 struct User {
-    char name[50];
-    char password[50];
-    char type[10];
+    char lastname[50];
+    char firstname[50];
+    char password[100];
+    char id[50];
+    char type[50];
+    char username[50];
+};
+void initializeUser(struct User* user) {
+    memset(user, 0, sizeof(struct User));
+}
+
+void managementMode() {
+    // Code for management mode
+    printf("You are in management mode.\n");
+    // Add your management mode functionality here
+}
+
+void clientMode() {
+    // Code for client mode
+    printf("You are in client mode.\n");
+    // Add your client mode functionality here
+}
+
+void saveUserData(struct User user) {
+    FILE *fp;
+    fp = fopen("users.txt", "a"); // open the file in append mode
+
+    if (fp == NULL) {
+        printf("Failed to open the file.\n");
+        return;
+    }
+
+    fprintf(fp, "%s %s\n", user.firstname, user.password);
+    fclose(fp);
+
+    printf("User data saved successfully.\n");
+}
+struct UserChoice {
+    char Choice[50];
+    bool isLoginSelected;
+    bool isRegisterSelected;
 };
 
-void saveUserToFile(struct User user) {
-    FILE *fp;
-
-    fp = fopen("users.txt", "a"); // open file for appending
-
-    if (fp == NULL) {
-        printf("Failed to open file.\n");
-        return;
-    }
-
-    // write user to file
-    fprintf(fp, "%s %s %s\n", user.name, user.password, user.type);
-
-    fclose(fp); // close file
-    printf("User saved to file!\n");
+void initializeChoice(struct UserChoice* choice) {
+    choice->isLoginSelected = false;
+    choice->isRegisterSelected = false;
 }
-struct User findUserByName(char *filename, char *name) {
-    FILE *fp;
-    char line[150];
-    struct User user = {"", "", ""};
 
-    fp = fopen(filename, "r"); // open file for reading
-
-    if (fp == NULL) {
-        printf("Failed to open file.\n");
-        return user;
-    }
-
-    // read each line of the file
-    while (fgets(line, 150, fp)) {
-        // parse the line into name, password, and type
-        char *token = strtok(line, " ");
-        strcpy(user.name, token);
-        token = strtok(NULL, " ");
-        strcpy(user.password, token);
-        token = strtok(NULL, " ");
-        strcpy(user.type, token);
-
-        // remove newline character from type string
-        user.type[strcspn(user.type, "\n")] = 0;
-
-        // check if the user's name matches the name we're looking for
-        if (strcmp(user.name, name) == 0) {
-            fclose(fp); // close file
-            return user; // return the user structure
-        }
-    }
-
-    fclose(fp); // close file
-    printf("User not found.\n");
-    return user;
+void selectLogin(struct UserChoice* choice, struct User* user) {
+    choice->isLoginSelected = true;
+    choice->isRegisterSelected = false;
+    printf("Enter your username: ");
+    fgets(user->username, sizeof(user->username), stdin);
+    user->username[strcspn(user->username, "\n")] = '\0';
+    printf("Enter your password: ");
+    fgets(user->password, sizeof(user->password), stdin);
+    user->password[strcspn(user->password, "\n")] = '\0';// Remove newline character
 }
+
+void welcomeInterface(struct User* user) {
+    printf("Welcome, %s!\n", user);
+    printf("This is the welcome interface.\n");
+    // Add interface functionality here
+}
+
+void selectRegister(struct UserChoice* choice) {
+    choice->isLoginSelected = false;
+    choice->isRegisterSelected = true;
+    printf("Register selected.\n");
+}
+void registerUser(struct User* user) {
+    printf("Welcome! Please enter your ID: ");
+    fgets(user->id, sizeof(user->id), stdin);
+    user->id[strcspn(user->id, "\n")] = '\0'; // Remove newline character
+
+    printf("Please enter your firstname: ");
+    fgets(user->firstname, sizeof(user->firstname), stdin);
+    user->firstname[strcspn(user->firstname, "\n")] = '\0'; // Remove newline character
+
+    printf("Please enter your lastname: ");
+    fgets(user->lastname, sizeof(user->lastname), stdin);
+    user->lastname[strcspn(user->lastname, "\n")] = '\0'; // Remove newline character
+
+    printf("Please enter your password: ");
+    fgets(user->password, sizeof(user->password), stdin);
+    user->password[strcspn(user->password, "\n")] = '\0'; // Remove newline character
+}
+void chooseType(struct User* user) {
+    printf("Please choose a mode (management/client): ");
+    fgets(user->type, sizeof(user->type), stdin);
+    user->type[strcspn(user->type, "\n")] = '\0'; // Remove newline character
+
+    if (strcmp(user->type, "management") == 0) {
+        printf("Management mode selected.\n");
+        // Call management mode function
+    } else if (strcmp(user->type, "client") == 0) {
+        printf("Client mode selected.\n");
+        // Call client mode function
+    } else {
+        printf("Invalid mode selected. Exiting...\n");
+    }
+}
+
+
 int main() {
-    // char *filename = "example.txt";
-    // char *newContent = "\nOk good now"; 
+    char type[20];
+    struct User user;
+    struct UserChoice choice;
+    initializeChoice(&choice);
+    initializeUser(&user);
+    char input;
+    scanf(" %c", &input);
 
-    // appendToFile(filename, newContent);
+    if (input == 'R' || input == 'r') {
+        registerUser(&user);
+        chooseType(&user);
+    } else if (input == 'L' || input == 'l') {
+        printf("Login to access the welcome interface.\n");
+        // Perform authentication here (e.g., verify username and password)
+        welcomeInterface(&user);
+    } else if (input == 'Q' || input == 'q') {
+        printf("Exiting...\n");
+    } else {
+        printf("Invalid choice.\n");
+    }
 
-    // return 0;
-  // create a user
-    // struct User user1;
-    // strcpy(user1.name, "Yassir");
-    // strcpy(user1.password, "password123");
-    // strcpy(user1.type, "client");
-    
-    // save user to file
-    // saveUserToFile(user1);
-  char *filename = "users.txt";
-  struct User user = findUserByName(filename, "Yassir");
-  printf("%s",user.password);
+    // Perform authentication here (e.g., verify username and password)
+
+    // If authentication is successful
+    welcomeInterface(&user);
+
+    saveUserData(user); // Save user data to file
+
     return 0;
 }
+
