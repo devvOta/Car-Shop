@@ -25,13 +25,52 @@ void login(struct User* user) {
 void managementMode() {
     // Code for management mode
     printf("You are in management mode.\n");
+    printf("Welcome back, %s!\n");
+    printf("=========================================\n");
+    printf("              Car Shop              \n");
+    printf("=========================================\n");
+    printf("Available options:\n");
+    printf("1. Browse Products\n");
+    printf("2. Add to Cart\n");
+    printf("3. View Cart\n");
+    printf("4. Checkout\n");
+    printf("5. Logout\n");
+
+    int choice;
+    printf("Enter your choice: ");
+    scanf("%d", &choice);
+
+    switch (choice) {
+        case 1:
+            printf("See the missing products...\n");
+            // Add code for browsing products
+            break;
+        case 2:
+            printf("See the most popular purchases...\n");
+            // Add code for adding to cart
+            break;
+        case 3:
+            printf("The users...\n");
+            // Add code for viewing cart
+            break;
+        case 4:
+            printf("Help area...\n");
+            // Add code for checkout
+            break;
+        case 5:
+            printf("Logging out...\n");
+            // Add code for logging out
+            break;
+        default:
+            printf("Invalid choice.\n");
+            break;
+    }
 }
 
 void clientMode() {
     // Code for client mode
     printf("You are in client mode.\n");
-    printf("Welcome back, %s!\n",);
-    printf("Welcome to the Car shop, %s!\n",);
+    printf("Welcome to the Car shop, %s!\n");
     printf("=========================================\n");
     printf("              Car Shop              \n");
     printf("=========================================\n");
@@ -126,5 +165,3 @@ int main() {
 
     return 0;
 }
-
-
