@@ -30,10 +30,10 @@ void managementMode() {
     printf("              Car Shop              \n");
     printf("=========================================\n");
     printf("Available options:\n");
-    printf("1. Browse Products\n");
-    printf("2. Add to Cart\n");
-    printf("3. View Cart\n");
-    printf("4. Checkout\n");
+    printf("1. Resupply\n");
+    printf("2. The products\n");
+    printf("3. Favourite products of the month\n");
+    printf("4. The Customers\n");
     printf("5. Logout\n");
 
     int choice;
