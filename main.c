@@ -4,7 +4,6 @@
 
 struct User {
     char username[50];
-    // Add additional fields as needed
     char lastname[50];
     char firstname[50];
     char password[100];
@@ -26,7 +25,6 @@ void login(struct User* user) {
 void managementMode() {
     // Code for management mode
     printf("You are in management mode.\n");
-    // Add your management mode functionality here
 }
 
 void clientMode() {
