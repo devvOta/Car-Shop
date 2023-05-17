@@ -11,6 +11,14 @@ struct User {
     char type[50];
 };
 
+struct Car{
+  int num_ref;
+  char name;
+  int quantity;
+  int price;
+  int size;
+}Car; 
+
 void initializeUser(struct User* user) {
     memset(user, 0, sizeof(struct User));
 }
@@ -19,6 +27,17 @@ void login(struct User* user) {
     printf("Enter your username: ");
     fgets(user->username, sizeof(user->username), stdin);
     user->username[strcspn(user->username, "\n")] = '\0'; // Remove newline character
+}
+void viewCar(){
+  FILE* f;
+  char c;
+   f = fopen("car.txt","r");
+  if (f==NULL){
+    printf("erreur");
+  }
+    while((c=fgetc(f))!=EOF){
+      printf("%c",c);
+    }
 }
 
 
@@ -50,8 +69,8 @@ void managementMode() {
             // Add code for adding to cart
             break;
         case 3:
-            printf("The users...\n");
             // Add code for viewing cart
+            viewCar();
             break;
         case 4:
             printf("Help area...\n");
@@ -95,8 +114,7 @@ void clientMode() {
             // Add code for adding to cart
             break;
         case 3:
-            printf("Viewing cart...\n");
-            // Add code for viewing cart
+            viewCar();
             break;
         case 4:
             printf("Checking out...\n");
@@ -110,6 +128,11 @@ void clientMode() {
             printf("Invalid choice.\n");
             break;
     }
+}
+
+void carMode(){
+  printf("Choise one car to buy\n");
+  
 }
 
 void saveUserData(struct User user) {
