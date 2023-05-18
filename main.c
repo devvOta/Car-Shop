@@ -2,6 +2,18 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define SIZE 40
+
+struct Client {
+    char nom[50];
+    char prenom[50];
+    char id[50];
+};
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 struct User {
     char username[50];
     char lastname[50];
@@ -18,6 +30,16 @@ struct Car{
   int price;
   int size;
 }Car; 
+
+void Resupply(){
+  printf("Quels voitures voulez vous ajouter ?\n");
+  FILE*f;
+  f=fopen("car.txt", "r");
+   if (f==NULL){
+    printf("erreur");
+  }
+  fprintf (f, "ref :%d; name: %s; quantity: %d; price:%d; size:%d \n" , Car.num_ref, &Car.name,Car.quantity,Car.price,Car.size);
+}
 
 void initializeUser(struct User* user) {
     memset(user, 0, sizeof(struct User));
@@ -37,6 +59,65 @@ void viewCar(){
   }
     while((c=fgetc(f))!=EOF){
       printf("%c",c);
+    }
+}
+
+void AddCart() {
+    
+    FILE* fichier = fopen("AddCart.txt", "a");
+    if (fichier == NULL) {
+        printf("Erreur lors de l'ouverture du fichier.\n");
+        exit(1); // ou toute autre action appropriée
+    }
+
+    printf("Choisissez une voiture :\n");
+     FILE* f;
+  char c;
+   f = fopen("car.txt","r");
+  if (f==NULL){
+    printf("erreur");
+  }
+    while((c=fgetc(f))!=EOF){
+      printf("%c",c);
+    }
+
+    int choice;
+    printf("Entrez votre choix : ");
+    scanf("%d", &choice);
+
+    const char* chaine = NULL;
+
+    switch (choice) {
+        case 1:
+            chaine = "AUDI-rs6";
+            break;
+        case 2:
+            chaine = "BMX-M3copet";
+            break;
+        case 3:
+            chaine = "LAMBORGINI-URUS";
+            break;
+        case 4:
+            chaine = "FERRARI-5T";
+            break;
+        case 5:
+            chaine = "CLIO2-ABBES";
+            break;
+        default:
+            printf("Choix invalide.\n");
+            fclose(fichier);
+            return;
+    }
+   int rec;
+  printf("Voulez vous continuez vos achat?\n ");
+  printf("Si oui tapez 1 sinon tapez 2\n ");
+    scanf("%d", &rec);
+    switch(rec){
+      case 1:
+      AddCart();
+      case 2:
+    fprintf(fichier, "%s\n", chaine);
+    fclose(fichier);
     }
 }
 
@@ -61,7 +142,7 @@ void managementMode() {
 
     switch (choice) {
         case 1:
-            printf("See the missing products...\n");
+            Resupply();
             // Add code for browsing products
             break;
         case 2:
@@ -110,7 +191,7 @@ void clientMode() {
             // Add code for browsing products
             break;
         case 2:
-            printf("Adding to cart...\n");
+            AddCart();
             // Add code for adding to cart
             break;
         case 3:
@@ -135,19 +216,30 @@ void carMode(){
   
 }
 
-void saveUserData(struct User user) {
-    FILE *fp;
-    fp = fopen("users.txt", "a"); // open the file in append mode
 
-    if (fp == NULL) {
-        printf("Failed to open the file.\n");
+void saveUserData(struct User client) {
+    // Générer le nom du fichier en concaténant l'identifiant du client avec l'extension ".txt"
+    char nomFichier[100];
+    strcpy(nomFichier, client.lastname);
+    strcat(nomFichier, ".txt");
+
+    // Ouvrir le fichier en mode écriture
+    FILE* fichier = fopen(nomFichier, "w");
+
+    if (fichier == NULL) {
+        printf("Erreur lors de la création du fichier.\n");
         return;
     }
 
-    fprintf(fp, "%s %s\n", user.firstname, user.password);
-    fclose(fp);
+    // Écrire les informations du client dans le fichier
+    fprintf(fichier, "Nom: %s\n", client.lastname);
+    fprintf(fichier, "Prénom: %s\n", client.firstname);
+    fprintf(fichier, "Identifiant: %s\n", client.id);
+    fprintf(fichier,"Mot de passe: %s ",client.password);
+    // Fermer le fichier
+    fclose(fichier);
 
-    printf("User data saved successfully.\n");
+    printf("Le fichier pour le client %s a été créé avec succès.\n", client.id);
 }
 
 int main() {
@@ -188,3 +280,4 @@ int main() {
 
     return 0;
 }
+
