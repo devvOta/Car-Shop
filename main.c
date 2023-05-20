@@ -44,25 +44,23 @@ void Resupply(){
 void initializeUser() {
     struct User user;
 
-    printf("Please enter your first name: ");
+    printf("Please enter your first name: \n");
     fgets(user.firstname, sizeof(user.firstname), stdin);
     user.firstname[strcspn(user.firstname, "\n")] = '\0';
 
-    printf("Please enter your last name: ");
+    printf("Please enter your last name: \n");
     fgets(user.lastname, sizeof(user.lastname), stdin);
     user.lastname[strcspn(user.lastname, "\n")] = '\0';
 
-    printf("Please enter your ID: ");
+    printf("Please enter your ID: \n");
     fgets(user.id, sizeof(user.id), stdin);
     user.id[strcspn(user.id, "\n")] = '\0';
 
-    printf("Please enter your password: ");
+    printf("Please enter your password: \n");
     fgets(user.password, sizeof(user.password), stdin);
     user.password[strcspn(user.password, "\n")] = '\0';
 
-    printf("Please choose a type (management/client): ");
-    fgets(user.type, sizeof(user.type), stdin);
-    user.type[strcspn(user.type, "\n")] = '\0';
+    strcpy(user.type, "client");  // Définition du type en tant que "client"
 
     printf("Welcome, %s!\n", user.firstname);
 
@@ -253,7 +251,8 @@ void saveUserData(struct User client) {
     fprintf(fichier, "Nom: %s\n", client.lastname);
     fprintf(fichier, "Prénom: %s\n", client.firstname);
     fprintf(fichier, "Identifiant: %s\n", client.id);
-    fprintf(fichier,"Mot de passe: %s ",client.password);
+    fprintf(fichier, "Mot de passe: %s\n ", client.password);
+    fprintf(fichier, "Type: %s\n ", client.type);
     // Fermer le fichier
     fclose(fichier);
 
@@ -262,7 +261,6 @@ void saveUserData(struct User client) {
 
 int login() {
     char filename[100];
-    
     printf("Please enter your username: ");
     getchar();  // Consommer le caractère de nouvelle ligne restant
 
@@ -309,13 +307,13 @@ int login() {
                             if (strcmp(type, "client") == 0) {
                                 printf("Welcome, client!\n");
                                 // Code pour l'interface client
+                                
                                 clientMode();
-                                return 1;
                             } else if (strcmp(type, "management") == 0) {
                                 printf("Welcome, manager!\n");
                                 // Code pour l'interface management
+    
                                 managementMode();
-                                return 2;
                             } else {
                                 printf("Invalid user type.\n");
                                 return 0;
