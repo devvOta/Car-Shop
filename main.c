@@ -27,6 +27,10 @@ struct Car{
   int size;
 }Car; 
 
+void managementMode();
+void clientMode();
+void saveUserData(struct User user);
+
 void Resupply(){
   printf("Which car you want to add ?\n");
   FILE*f;
@@ -37,15 +41,43 @@ void Resupply(){
   fprintf (f, "ref :%d; name: %s; quantity: %d; price:%d; size:%d \n" , Car.num_ref, &Car.name,Car.quantity,Car.price,Car.size);
 }
 
-void initializeUser(struct User* user) {
-    memset(user, 0, sizeof(struct User));
+void initializeUser() {
+    struct User user;
+
+    printf("Please enter your first name: ");
+    fgets(user.firstname, sizeof(user.firstname), stdin);
+    user.firstname[strcspn(user.firstname, "\n")] = '\0';
+
+    printf("Please enter your last name: ");
+    fgets(user.lastname, sizeof(user.lastname), stdin);
+    user.lastname[strcspn(user.lastname, "\n")] = '\0';
+
+    printf("Please enter your ID: ");
+    fgets(user.id, sizeof(user.id), stdin);
+    user.id[strcspn(user.id, "\n")] = '\0';
+
+    printf("Please enter your password: ");
+    fgets(user.password, sizeof(user.password), stdin);
+    user.password[strcspn(user.password, "\n")] = '\0';
+
+    printf("Please choose a type (management/client): ");
+    fgets(user.type, sizeof(user.type), stdin);
+    user.type[strcspn(user.type, "\n")] = '\0';
+
+    printf("Welcome, %s!\n", user.firstname);
+
+    if (strcmp(user.type, "management") == 0) {
+        managementMode();
+    } else if (strcmp(user.type, "client") == 0) {
+        clientMode();
+    } else {
+        printf("Invalid type selected. Exiting...\n");
+        return;
+    }
+
+    saveUserData(user);
 }
 
-void login(struct User* user) {
-    printf("Enter your username: ");
-    fgets(user->username, sizeof(user->username), stdin);
-    user->username[strcspn(user->username, "\n")] = '\0'; // Remove newline character
-}
 void viewCar(){
   FILE* f;
   char c;
@@ -57,66 +89,61 @@ void viewCar(){
       printf("%c",c);
     }
 }
-
 void AddCart() {
-    
-    FILE* fichier = fopen("AddCart.txt", "a");
-    if (fichier == NULL) {
-        printf("Error when opening the file, try again.\n");
-        exit(1); // or any other appropriate action
-    }
-
-    printf("Choose another car :\n");
-     FILE* f;
-  char c;
-   f = fopen("car.txt","r");
-  if (f==NULL){
-    printf("Error, try again");
-  }
-    while((c=fgetc(f))!=EOF){
-      printf("%c",c);
-    }
+    printf("Choose a car to add to the cart:\n");
+    viewCar();
 
     int choice;
-    printf("Enter your choice : ");
+    printf("Enter your choice: ");
     scanf("%d", &choice);
 
-    const char* chaine = NULL;
+    const char* carNames[] = {
+        "AUDI-rs6",
+        "BMX-M3copet",
+        "LAMBORGHINI-URUS",
+        "FERRARI-5T",
+        "CLIO2-ABBES"
+    };
 
-    switch (choice) {
-        case 1:
-            chaine = "AUDI-rs6";
-            break;
-        case 2:
-            chaine = "BMX-M3copet";
-            break;
-        case 3:
-            chaine = "LAMBORGINI-URUS";
-            break;
-        case 4:
-            chaine = "FERRARI-5T";
-            break;
-        case 5:
-            chaine = "CLIO2-ABBES";
-            break;
-        default:
-            printf("invalid choice.\n");
-            fclose(fichier);
-            return;
+    if (choice < 1 || choice > 5) {
+        printf("Invalid choice.\n");
+        return;
     }
-   int rec;
-  printf("Do you want to buy something else ?\n ");
-  printf("If yes press 1, otherwise press 2\n ");
-    scanf("%d", &rec);
-    switch(rec){
-      case 1:
-      AddCart();
-      case 2:
-    fprintf(fichier, "%s\n", chaine);
-    fclose(fichier);
+
+    FILE* file = fopen("AddCart.txt", "a");
+    if (file == NULL) {
+        printf("Error opening the file, try again.\n");
+        return;
     }
+    fprintf(file, "%s\n", carNames[choice - 1]);
+    fclose(file);
+    printf("Car added to the cart!\n");
 }
 
+void resupply() {
+    printf("Which car do you want to add?\n");
+    struct Car car;
+    printf("Enter the car reference number: ");
+    scanf("%d", &car.num_ref);
+    printf("Enter the car name: ");
+    scanf("%s", car.name);
+    printf("Enter the car quantity: ");
+    scanf("%d", &car.quantity);
+    printf("Enter the car price: ");
+    scanf("%d", &car.price);
+    printf("Enter the car size: ");
+    scanf("%d", &car.size);
+
+    FILE* file = fopen("car.txt", "a");
+    if (file == NULL) {
+        printf("Error opening the file, try again.\n");
+        return;
+    }
+    fprintf(file, "ref: %d; name: %s; quantity: %d; price: %d; size: %d\n",
+            car.num_ref, car.name, car.quantity, car.price, car.size);
+    fclose(file);
+    printf("Car added successfully!\n");
+}
 
 void managementMode() {
     // Code for management mode
@@ -184,22 +211,19 @@ void clientMode() {
     switch (choice) {
         case 1:
             printf("Browsing products...\n");
-            // Add code for browsing products
+            AddCart();
+            //code for browsing products
             break;
         case 2:
-            AddCart();
-            // Add code for adding to cart
-            break;
-        case 3:
             viewCar();
             break;
-        case 4:
+        case 3:
             printf("Checking out...\n");
-            // Add code for checkout
+            // code for checkout
             break;
-        case 5:
+        case 4:
             printf("Logging out...\n");
-            // Add code for logging out
+            // code for logging out
             break;
         default:
             printf("Invalid choice.\n");
@@ -208,71 +232,95 @@ void clientMode() {
 }
 
 void carMode(){
-  printf("Choise one car to buy\n");
+  printf("Choose one car to buy\n");
   
 }
-
-
-void saveUserData(struct User client) {
-    // Generate the file name by concatenating the client ID with the ".txt" extension
-    char nomFichier[100];
-    strcpy(nomFichier, client.lastname);
-    strcat(nomFichier, ".txt");
-
-    // Open the file in write mode
-    FILE* fichier = fopen(nomFichier, "w");
-
-    if (fichier == NULL) {
-        printf("Error, file not created, try again.\n");
+void saveUserData(struct User user) {
+    FILE* file = fopen("users.txt", "a");
+    if (file == NULL) {
+        printf("Error opening file.\n");
         return;
     }
 
-    // Write the customer information to the file
-    fprintf(fichier, "Last name: %s\n", client.lastname);
-    fprintf(fichier, "First name: %s\n", client.firstname);
-    fprintf(fichier, "ID: %s\n", client.id);
-    fprintf(fichier,"Password: %s ",client.password);
-    // Fermer le fichier
-    fclose(fichier);
+    fprintf(file, "First Name: %s\n", user.firstname);
+    fprintf(file, "Last Name: %s\n", user.lastname);
+    fprintf(file, "ID: %s\n", user.id);
+    fprintf(file, "Password: %s\n", user.password);
+    fprintf(file, "Type: %s\n", user.type);
+    fprintf(file, "\n");
+    fclose(file);
+}
 
-    printf("The file for client %s has been successfully created.\n", client.id);
+int login() {
+    char username[100];
+    char password[100];
+
+    printf("Please enter your username: ");
+    fgets(username, sizeof(username), stdin);
+    username[strcspn(username, "\n")] = '\0';
+
+    printf("Please enter your password: ");
+    fgets(password, sizeof(password), stdin);
+    password[strcspn(password, "\n")] = '\0';
+
+    FILE* file = fopen("users.txt", "r");
+    if (file == NULL) {
+        printf("Error opening file.\n");
+        return 0;
+    }
+
+    char line[256];
+    while (fgets(line, sizeof(line), file)) {
+        if (strstr(line, username) != NULL) {
+            fgets(line, sizeof(line), file);
+            if (strstr(line, password) != NULL) {
+                fclose(file);
+                return 1;
+            }
+        }
+    }
+
+    fclose(file);
+    return 0;
 }
 
 int main() {
     char mode[20];
-    struct User user;
+    int choice;
+    printf("Welcome to the Car Shop!\n");
 
-    printf("Welcome! Please enter your ID: ");
-    fgets(user.id, sizeof(user.id), stdin);
-    user.id[strcspn(user.id, "\n")] = '\0'; // Remove newline character
+    while (1) {
+        printf("=========================================\n");
+        printf("              Car Shop              \n");
+        printf("=========================================\n");
+        printf("Available options:\n");
+        printf("1. Register\n");
+        printf("2. Log in\n");
+        printf("3. Quit\n");
 
-    printf("Please enter your firstname: ");
-    fgets(user.firstname, sizeof(user.firstname), stdin);
-    user.firstname[strcspn(user.firstname, "\n")] = '\0'; // Remove newline character
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
 
-    printf("Please enter your lastname: ");
-    fgets(user.lastname, sizeof(user.lastname), stdin);
-    user.lastname[strcspn(user.lastname, "\n")] = '\0'; // Remove newline character
-
-    printf("Please enter your password: ");
-    fgets(user.password, sizeof(user.password), stdin);
-    user.password[strcspn(user.password, "\n")] = '\0'; // Remove newline character
-  
-    printf("Please choose a mode (management/client): ");
-    fgets(mode, sizeof(mode), stdin);
-    mode[strcspn(mode, "\n")] = '\0'; // Remove newline character
-
-    printf("Welcome, %s!\n", user.firstname);
-
-    if (strcmp(mode, "management") == 0) {
-        managementMode();
-    } else if (strcmp(mode, "client") == 0) {
-        clientMode();
-    } else {
-        printf("Invalid mode selected. Exiting...\n");
-        return 1;
+        switch (choice) {
+            case 1:
+                initializeUser();
+                break;
+            case 2:
+                if (login()) {
+                    printf("Login successful!\n");
+                    break;
+                } else {
+                    printf("Invalid username or password. Please try again.\n");
+                    break;
+                }
+            case 3:
+                printf("Quitting...\n");
+                exit(0);
+            default:
+                printf("Invalid choice.\n");
+                break;
+        }
     }
-      saveUserData(user); // Save user data to file
 
     return 0;
 }
