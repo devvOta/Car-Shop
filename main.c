@@ -235,54 +235,103 @@ void carMode(){
   printf("Choose one car to buy\n");
   
 }
-void saveUserData(struct User user) {
-    FILE* file = fopen("users.txt", "a");
-    if (file == NULL) {
-        printf("Error opening file.\n");
+void saveUserData(struct User client) {
+     // Générer le nom du fichier en concaténant l'identifiant du client avec l'extension ".txt"
+    char nomFichier[100];
+    strcpy(nomFichier, client.lastname);
+    strcat(nomFichier, ".txt");
+
+    // Ouvrir le fichier en mode écriture
+    FILE* fichier = fopen(nomFichier, "w");
+
+    if (fichier == NULL) {
+        printf("Erreur lors de la création du fichier.\n");
         return;
     }
 
-    fprintf(file, "First Name: %s\n", user.firstname);
-    fprintf(file, "Last Name: %s\n", user.lastname);
-    fprintf(file, "ID: %s\n", user.id);
-    fprintf(file, "Password: %s\n", user.password);
-    fprintf(file, "Type: %s\n", user.type);
-    fprintf(file, "\n");
-    fclose(file);
+    // Écrire les informations du client dans le fichier
+    fprintf(fichier, "Nom: %s\n", client.lastname);
+    fprintf(fichier, "Prénom: %s\n", client.firstname);
+    fprintf(fichier, "Identifiant: %s\n", client.id);
+    fprintf(fichier,"Mot de passe: %s ",client.password);
+    // Fermer le fichier
+    fclose(fichier);
+
+    printf("Le fichier pour le client %s a été créé avec succès.\n", client.id);
 }
 
 int login() {
-    char username[100];
-    char password[100];
-
+    char filename[100];
+    
     printf("Please enter your username: ");
-    fgets(username, sizeof(username), stdin);
-    username[strcspn(username, "\n")] = '\0';
+    getchar();  // Consommer le caractère de nouvelle ligne restant
+
+    fgets(filename, sizeof(filename), stdin);
+    filename[strcspn(filename, "\n")] = '\0';
+    strcat(filename, ".txt");
+
+    FILE* file = fopen(filename, "r");
+    if (file == NULL) {
+        printf("File not found.\n");
+        return 0;
+    }
+
+    char id[100];
+    char password[100];
+    char type[100];
+
+    printf("Please enter your ID: ");
+    fgets(id, sizeof(id), stdin);
+    id[strcspn(id, "\n")] = '\0';
 
     printf("Please enter your password: ");
     fgets(password, sizeof(password), stdin);
     password[strcspn(password, "\n")] = '\0';
 
-    FILE* file = fopen("users.txt", "r");
-    if (file == NULL) {
-        printf("Error opening file.\n");
-        return 0;
-    }
-
     char line[256];
     while (fgets(line, sizeof(line), file)) {
-        if (strstr(line, username) != NULL) {
-            fgets(line, sizeof(line), file);
-            if (strstr(line, password) != NULL) {
-                fclose(file);
-                return 1;
+        if (strstr(line, "ID:") != NULL) {
+            char savedID[100];
+            fgets(savedID, sizeof(savedID), file);
+            savedID[strcspn(savedID, "\n")] = '\0';
+            if (strcmp(savedID, id) == 0) {
+                fgets(line, sizeof(line), file);
+                if (strstr(line, "Password:") != NULL) {
+                    char savedPassword[100];
+                    fgets(savedPassword, sizeof(savedPassword), file);
+                    savedPassword[strcspn(savedPassword, "\n")] = '\0';
+                    if (strcmp(savedPassword, password) == 0) {
+                        fgets(line, sizeof(line), file);
+                        if (strstr(line, "type:") != NULL) {
+                            fgets(type, sizeof(type), file);
+                            type[strcspn(type, "\n")] = '\0';
+                            fclose(file);
+                            if (strcmp(type, "client") == 0) {
+                                printf("Welcome, client!\n");
+                                // Code pour l'interface client
+                                clientMode();
+                                return 1;
+                            } else if (strcmp(type, "management") == 0) {
+                                printf("Welcome, manager!\n");
+                                // Code pour l'interface management
+                                managementMode();
+                                return 2;
+                            } else {
+                                printf("Invalid user type.\n");
+                                return 0;
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 
     fclose(file);
+    printf("Invalid ID or password.\n");
     return 0;
 }
+
 
 int main() {
     char mode[20];
