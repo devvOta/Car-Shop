@@ -1,0 +1,11 @@
+lamborgini;1007;0;200000.00;moyen
+Ford;1006;0;60000.00;petit
+peugeot;3000;0;14500.00;moyen
+t;0;0;0.00;h
+Audi;1003;0;42000.00;petit
+Honda;1005;0;25000.00;petit
+Toyota;1004;4;64000.00;petit
+Mercedes;1002;8;90000.00;petit
+seat;1009;20;100000.00;grand
+audiRS6;1008;44;50000.00;moyen
+BMW;1001;149;110000.00;petit
