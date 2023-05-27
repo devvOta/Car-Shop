@@ -1,4 +1,4 @@
-###README - Programme Car Shop by Yassir LAFRIZI, Younes DOUICI, Souleim GHOUDI
+###README - Programme Car Shop by Yassir LAFRIZI, Younes DOUICI, Souleim GHOUDI MI5
 
 ##Ce programme est conçu pour gérer le stock de voitures dans un magasin. Il permet d'effectuer différentes opérations telles que l'ajout de voitures, le réapprovisionnement, la recherche d'informations sur le stock, l'achat de produits, la consultation de l'historique d'achat, et le mode de gestion pour l'administrateur.
 
