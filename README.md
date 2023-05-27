@@ -28,7 +28,7 @@
 
 12. Mode de gestion pour l'administrateur : La fonction "managementMode" permet à l'administrateur d'accéder à un mode de gestion spécial où il peut visualiser les produits avec un stock de 0, les voitures avec un stock faible, et l'espace disponible dans le magasin. L'administrateur peut également effectuer des opérations d'ajout de produits, de réapprovisionnement et de recherche d'informations sur le stock.
 
-13. Le programme comporte des choix multiples, pour y répondre, il faudra sélectionner les boutons 1, 2, 3, et ainsi de suite s'il existe plus de propositions.
+13. Le programme comporte des choix multiples, pour les sélectionner, il faudra sélectionner les boutons 1, 2, 3 (correspondant à la réponse voulue), et ainsi de suite s'il existe plus de propositions.
 
 Instructions pour l'utilisation du programme :
 - Assurez-vous d'avoir les fichiers "car.txt" et "user.txt" dans le même répertoire que le programme.
